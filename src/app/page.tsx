@@ -1,3 +1,6 @@
+
+import DashboardOverview from "./(dashboard)/page"
+
 export default function Home() {
-  return <></>;
+  return <DashboardOverview />
 }
