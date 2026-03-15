@@ -1,2 +1,1 @@
-// This file is moved to src/app/page.tsx. Please delete the (dashboard) directory.
-export default function RemovedPage() { return null; }
+// This file is obsolete. Root route is at src/app/page.tsx.

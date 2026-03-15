@@ -1,2 +1,1 @@
-// Path conflict resolved. Please delete the (dashboard) directory.
-export default function RemovedLayout({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+// This file is obsolete. Root layout is at src/app/layout.tsx.
