@@ -40,7 +40,7 @@ import {
   DialogTrigger 
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { PlaceHolderImages } from "@/app/lib/placeholder-images"
+import { PlaceHolderImages } from "@/lib/placeholder-images"
 import Image from "next/image"
 
 const initialProducts = [

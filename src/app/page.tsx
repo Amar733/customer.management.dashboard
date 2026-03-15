@@ -24,7 +24,7 @@ import {
   YAxis,
   Tooltip,
 } from "recharts"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const data = [
   { name: "Jan", total: 1200 },
