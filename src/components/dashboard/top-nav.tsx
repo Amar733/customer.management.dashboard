@@ -1,7 +1,6 @@
-
 "use client"
 
-import { Bell, Search, User } from "lucide-react"
+import { Bell, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -14,10 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { PlaceHolderImages } from "@/app/lib/placeholder-images"
+import { PlaceHolderImages } from "@/lib/placeholder-images"
 
 export function TopNav() {
-  const avatar = PlaceHolderImages.find(img => img.id === "user-avatar")
+  const avatar = PlaceHolderImages?.find(img => img.id === "user-avatar")
 
   return (
     <header className="h-16 border-b bg-card flex items-center justify-between px-6 sticky top-0 z-10">

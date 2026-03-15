@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useEffect } from "react"
@@ -13,7 +12,7 @@ export default function RootPage() {
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-background">
-      <div className="animate-pulse text-muted-foreground">Loading dashboard...</div>
+      <div className="animate-pulse text-muted-foreground">Redirecting to dashboard...</div>
     </div>
   )
 }
