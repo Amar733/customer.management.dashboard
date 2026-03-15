@@ -1,11 +1,11 @@
-
 "use client"
 
 import { 
   Calendar, 
   ArrowUpRight, 
   ArrowDownRight,
-  Download
+  Download,
+  Filter
 } from "lucide-react"
 import { 
   Card, 
@@ -49,70 +49,52 @@ const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3
 
 export default function AnalyticsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Sales Analytics</h1>
-          <p className="text-muted-foreground">Deep dive into your business performance and trends.</p>
+          <h1 className="text-3xl font-bold">Business Intelligence</h1>
+          <p className="text-muted-foreground">Comprehensive insights into your store's performance metrics.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2"><Calendar className="h-4 w-4" /> This Week</Button>
-          <Button className="gap-2"><Download className="h-4 w-4" /> Export Report</Button>
+          <Button variant="outline" className="gap-2 bg-card border-none shadow-sm">
+            <Calendar className="h-4 w-4" /> This Week
+          </Button>
+          <Button variant="outline" className="gap-2 bg-card border-none shadow-sm">
+            <Filter className="h-4 w-4" /> Filter
+          </Button>
+          <Button className="gap-2 shadow-sm">
+            <Download className="h-4 w-4" /> Export Report
+          </Button>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3.24%</div>
-            <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-              <ArrowUpRight className="h-3 w-3" /> +1.2% from last week
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Average Order Value</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$124.50</div>
-            <p className="text-xs text-red-600 flex items-center gap-1 mt-1">
-              <ArrowDownRight className="h-3 w-3" /> -2.4% from last week
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Returning Customers</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">42%</div>
-            <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-              <ArrowUpRight className="h-3 w-3" /> +5% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Bounce Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">28.4%</div>
-            <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-              <ArrowDownRight className="h-3 w-3" /> -4.2% from last week
-            </p>
-          </CardContent>
-        </Card>
+        {[
+          { title: "Conversion Rate", value: "3.24%", change: "+1.2%", trend: "up" },
+          { title: "Avg Order Value", value: "$124.50", change: "-2.4%", trend: "down" },
+          { title: "Returning Customers", value: "42%", change: "+5%", trend: "up" },
+          { title: "Bounce Rate", value: "28.4%", change: "-4.2%", trend: "down" }
+        ].map((item, idx) => (
+          <Card key={item.title} className="border-none shadow-sm animate-slide-up" style={{ animationDelay: `${idx * 0.1}s` }}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">{item.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{item.value}</div>
+              <p className={`text-xs flex items-center gap-1 mt-1 font-medium ${item.trend === 'up' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                {item.trend === 'up' ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                {item.change} from last period
+              </p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border-none shadow-sm animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <CardHeader>
-            <CardTitle>Sales Trend</CardTitle>
-            <CardDescription>Daily revenue and order volume for the current week.</CardDescription>
+            <CardTitle>Growth Projection</CardTitle>
+            <CardDescription>Comparison of daily revenue and order volume targets.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[400px]">
@@ -120,27 +102,27 @@ export default function AnalyticsPage() {
                 <AreaChart data={areaData}>
                   <defs>
                     <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.15}/>
                       <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} />
                   <YAxis axisLine={false} tickLine={false} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
                   />
-                  <Area type="monotone" dataKey="sales" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="sales" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSales)" strokeWidth={3} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-none shadow-sm animate-slide-up" style={{ animationDelay: '0.5s' }}>
           <CardHeader>
-            <CardTitle>Sales by Category</CardTitle>
-            <CardDescription>Revenue distribution across departments.</CardDescription>
+            <CardTitle>Market Segmentation</CardTitle>
+            <CardDescription>Revenue distribution across core categories.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
@@ -150,9 +132,9 @@ export default function AnalyticsPage() {
                     data={categoryData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
+                    innerRadius={70}
+                    outerRadius={90}
+                    paddingAngle={8}
                     dataKey="value"
                   >
                     {categoryData.map((entry, index) => (
@@ -163,14 +145,14 @@ export default function AnalyticsPage() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="space-y-2 mt-4">
+            <div className="space-y-4 mt-6">
               {categoryData.map((cat, idx) => (
                 <div key={cat.name} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full" style={{backgroundColor: COLORS[idx]}} />
-                    <span>{cat.name}</span>
+                    <span className="font-medium">{cat.name}</span>
                   </div>
-                  <span className="font-medium">{((cat.value / 1200) * 100).toFixed(0)}%</span>
+                  <span className="text-muted-foreground">{((cat.value / 1200) * 100).toFixed(0)}%</span>
                 </div>
               ))}
             </div>
