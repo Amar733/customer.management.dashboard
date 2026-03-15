@@ -146,6 +146,7 @@ export default function DashboardOverview() {
               ].map((sale) => (
                 <div key={sale.email} className="flex items-center">
                   <Avatar className="h-9 w-9">
+                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${sale.name}`} alt={sale.name} />
                     <AvatarFallback>{sale.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="ml-4 space-y-1">

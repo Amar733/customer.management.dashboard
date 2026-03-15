@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -11,8 +10,7 @@ import {
   Users, 
   BarChart3, 
   Settings, 
-  Store,
-  ChevronRight
+  Store
 } from "lucide-react"
 
 import {
