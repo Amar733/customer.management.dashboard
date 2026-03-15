@@ -1,2 +1,6 @@
-// Obsolete. Path moved to /dashboard/orders
-export default function Obsolete() { return null; }
+
+import { redirect } from "next/navigation"
+
+export default function OrdersRedirect() {
+  redirect("/dashboard/orders")
+}

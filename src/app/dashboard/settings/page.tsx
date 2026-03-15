@@ -31,6 +31,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
 
 export default function SettingsPage() {
   return (

@@ -1,1 +1,6 @@
-export default function Obsolete() { return null; }
+
+import { redirect } from "next/navigation"
+
+export default function AnalyticsRedirect() {
+  redirect("/dashboard/analytics")
+}
