@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -29,27 +30,27 @@ import {
 const navItems = [
   {
     title: "Overview",
-    url: "/",
+    url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     title: "Products",
-    url: "/products",
+    url: "/dashboard/products",
     icon: Package,
   },
   {
     title: "Orders",
-    url: "/orders",
+    url: "/dashboard/orders",
     icon: ShoppingCart,
   },
   {
     title: "Customers",
-    url: "/customers",
+    url: "/dashboard/customers",
     icon: Users,
   },
   {
     title: "Analytics",
-    url: "/analytics",
+    url: "/dashboard/analytics",
     icon: BarChart3,
   },
 ]
@@ -60,7 +61,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="border-b h-16 flex items-center px-4">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
+        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
           <Store className="h-6 w-6" />
           <span className="group-data-[collapsible=icon]:hidden">ShopManager</span>
         </Link>
@@ -93,10 +94,10 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton 
               asChild 
-              isActive={pathname === "/settings"}
+              isActive={pathname === "/dashboard/settings"}
               tooltip="Settings"
             >
-              <Link href="/settings">
+              <Link href="/dashboard/settings">
                 <Settings />
                 <span>Settings</span>
               </Link>

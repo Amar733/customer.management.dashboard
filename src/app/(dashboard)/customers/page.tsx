@@ -1,1 +1,2 @@
-// This file is obsolete. Root route is at src/app/customers/page.tsx.
+// Obsolete. Path moved to /dashboard/customers
+export default function Obsolete() { return null; }

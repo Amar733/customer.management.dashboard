@@ -1,1 +1,2 @@
-// This file is obsolete. Root layout is at src/app/layout.tsx.
+// Obsolete. Layout moved to root or dashboard specific folder
+export default function Obsolete({ children }: { children: React.ReactNode }) { return <>{children}</>; }

@@ -1,1 +1,2 @@
-// This file is obsolete. Root route is at src/app/analytics/page.tsx.
+// Obsolete. Path moved to /dashboard/analytics
+export default function Obsolete() { return null; }
