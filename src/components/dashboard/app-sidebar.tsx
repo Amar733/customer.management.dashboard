@@ -11,7 +11,8 @@ import {
   BarChart3, 
   Settings, 
   ChefHat,
-  TicketPercent
+  TicketPercent,
+  PartyPopper
 } from "lucide-react"
 
 import {
@@ -47,6 +48,11 @@ const navItems = [
     title: "Guests",
     url: "/dashboard/customers",
     icon: Users,
+  },
+  {
+    title: "Festive Offers",
+    url: "/dashboard/offers",
+    icon: PartyPopper,
   },
   {
     title: "Coupons",
