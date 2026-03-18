@@ -12,7 +12,9 @@ import {
   Settings, 
   ChefHat,
   TicketPercent,
-  PartyPopper
+  PartyPopper,
+  Flame,
+  ArrowRight
 } from "lucide-react"
 
 import {
@@ -27,40 +29,42 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
 } from "@/components/ui/sidebar"
+import { Badge } from "@/components/ui/badge"
 
 const navItems = [
   {
-    title: "Overview",
+    title: "Executive Overview",
     url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Menu Items",
+    title: "Culinary Catalog",
     url: "/dashboard/products",
     icon: UtensilsCrossed,
   },
   {
-    title: "Live Orders",
+    title: "Kitchen Feed",
     url: "/dashboard/orders",
-    icon: ClipboardList,
+    icon: Flame,
+    badge: "8"
   },
   {
-    title: "Guests",
+    title: "Guest Directory",
     url: "/dashboard/customers",
     icon: Users,
   },
   {
-    title: "Festive Offers",
+    title: "Festive Hub",
     url: "/dashboard/offers",
     icon: PartyPopper,
   },
   {
-    title: "Coupons",
+    title: "Promo Codes",
     url: "/dashboard/coupons",
     icon: TicketPercent,
   },
   {
-    title: "Analytics",
+    title: "Deep Analytics",
     url: "/dashboard/analytics",
     icon: BarChart3,
   },
@@ -70,16 +74,18 @@ export function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar collapsible="icon" className="border-r bg-card">
-      <SidebarHeader className="border-b h-16 flex items-center px-4">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <ChefHat className="h-6 w-6" />
-          <span className="group-data-[collapsible=icon]:hidden">GustoManager</span>
+    <Sidebar collapsible="icon" className="border-r border-border/40 bg-card/80 backdrop-blur-xl">
+      <SidebarHeader className="border-b h-16 flex items-center px-6">
+        <Link href="/dashboard" className="flex items-center gap-3 font-black text-2xl text-primary tracking-tighter">
+          <div className="bg-primary p-1.5 rounded-xl shadow-lg shadow-primary/20">
+            <ChefHat className="h-6 w-6 text-white" />
+          </div>
+          <span className="group-data-[collapsible=icon]:hidden">Gusto<span className="text-foreground/80">Manager</span></span>
         </Link>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-3 pt-4">
         <SidebarGroup>
-          <SidebarGroupLabel>Operations</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">Back of House</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -88,11 +94,16 @@ export function AppSidebar() {
                     asChild 
                     isActive={pathname === item.url}
                     tooltip={item.title}
-                    className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                    className="h-11 px-3 rounded-xl transition-all data-[active=true]:bg-primary/10 data-[active=true]:text-primary group/item"
                   >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                    <Link href={item.url} className="flex items-center w-full">
+                      <item.icon className="transition-transform group-hover/item:scale-110" />
+                      <span className="flex-1 font-bold text-sm tracking-tight">{item.title}</span>
+                      {item.badge && (
+                        <Badge className="ml-auto bg-primary text-[10px] h-5 px-1.5 border-none group-data-[collapsible=icon]:hidden">
+                          {item.badge}
+                        </Badge>
+                      )}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -101,18 +112,18 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t p-4">
+      <SidebarFooter className="p-3 border-t border-border/40">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton 
               asChild 
               isActive={pathname === "/dashboard/settings"}
-              tooltip="Settings"
-              className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+              tooltip="Configurations"
+              className="h-11 px-3 rounded-xl transition-all data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
             >
               <Link href="/dashboard/settings">
                 <Settings />
-                <span>Settings</span>
+                <span className="font-bold text-sm tracking-tight">Configurations</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
