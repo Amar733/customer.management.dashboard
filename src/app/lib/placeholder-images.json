@@ -1,29 +1,28 @@
-
 {
   "placeholderImages": [
     {
-      "id": "product-1",
-      "description": "Modern wireless headphones",
-      "imageUrl": "https://picsum.photos/seed/shop1/400/400",
-      "imageHint": "wireless headphones"
+      "id": "dish-1",
+      "description": "Gourmet Pasta Carbonara",
+      "imageUrl": "https://picsum.photos/seed/pasta/400/400",
+      "imageHint": "pasta carbonara"
     },
     {
-      "id": "product-2",
-      "description": "Smart watch with leather strap",
-      "imageUrl": "https://picsum.photos/seed/shop2/400/400",
-      "imageHint": "smartwatch"
+      "id": "dish-2",
+      "description": "Wood-fired Margherita Pizza",
+      "imageUrl": "https://picsum.photos/seed/pizza/400/400",
+      "imageHint": "margherita pizza"
     },
     {
-      "id": "product-3",
-      "description": "Ergonomic office chair",
-      "imageUrl": "https://picsum.photos/seed/shop3/400/400",
-      "imageHint": "office chair"
+      "id": "dish-3",
+      "description": "Fresh Garden Salad",
+      "imageUrl": "https://picsum.photos/seed/salad/400/400",
+      "imageHint": "garden salad"
     },
     {
-      "id": "user-avatar",
-      "description": "User profile avatar",
-      "imageUrl": "https://picsum.photos/seed/user1/100/100",
-      "imageHint": "person avatar"
+      "id": "chef-avatar",
+      "description": "Head Chef Profile",
+      "imageUrl": "https://picsum.photos/seed/chef/100/100",
+      "imageHint": "chef person"
     }
   ]
 }

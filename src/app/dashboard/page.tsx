@@ -3,11 +3,12 @@
 import { 
   TrendingUp, 
   Users, 
-  Package, 
-  ShoppingCart,
+  Utensils, 
+  Clock,
   ArrowUpRight,
   ArrowDownRight,
-  MoreVertical
+  MoreVertical,
+  ChefHat
 } from "lucide-react"
 import { 
   Card, 
@@ -28,41 +29,41 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 
 const data = [
-  { name: "Jan", total: 1200 },
-  { name: "Feb", total: 2100 },
-  { name: "Mar", total: 1800 },
-  { name: "Apr", total: 2400 },
-  { name: "May", total: 1700 },
-  { name: "Jun", total: 2800 },
+  { name: "Mon", total: 1200 },
+  { name: "Tue", total: 2100 },
+  { name: "Wed", total: 1800 },
+  { name: "Thu", total: 2400 },
+  { name: "Fri", total: 3200 },
+  { name: "Sat", total: 4800 },
 ]
 
 const stats = [
   {
-    title: "Total Revenue",
-    value: "$45,231.89",
-    change: "+20.1%",
+    title: "Daily Revenue",
+    value: "$4,231.89",
+    change: "+12.1%",
     icon: TrendingUp,
     trend: "up"
   },
   {
-    title: "New Orders",
-    value: "+2,350",
-    change: "+18.1%",
-    icon: ShoppingCart,
+    title: "Active Tables",
+    value: "18 / 25",
+    change: "72% Occupancy",
+    icon: Utensils,
     trend: "up"
   },
   {
-    title: "Active Customers",
-    value: "+12,234",
-    change: "+19%",
+    title: "Total Guests",
+    value: "142",
+    change: "+8%",
     icon: Users,
     trend: "up"
   },
   {
-    title: "Inventory Alert",
-    value: "12 Items",
-    change: "-4%",
-    icon: Package,
+    title: "Wait Time",
+    value: "15 min",
+    change: "-5 min",
+    icon: Clock,
     trend: "down"
   },
 ]
@@ -71,8 +72,8 @@ export default function DashboardOverview() {
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
-        <p className="text-muted-foreground text-lg">Welcome back! Here's what's happening in your shop today.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Restaurant Briefing</h1>
+        <p className="text-muted-foreground text-lg">Service is running smoothly. Here's tonight's performance.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -80,16 +81,16 @@ export default function DashboardOverview() {
           <Card key={stat.title} className="shadow-sm border-none bg-card hover:shadow-md transition-shadow animate-slide-up" style={{ animationDelay: `${idx * 0.1}s` }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{stat.title}</CardTitle>
-              <div className="p-2 bg-primary/5 rounded-full">
+              <div className="p-2 bg-primary/10 rounded-full">
                 <stat.icon className="h-4 w-4 text-primary" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">{stat.value}</div>
-              <p className={`text-sm flex items-center gap-1 mt-2 font-medium ${stat.trend === 'up' ? 'text-emerald-600' : 'text-rose-600'}`}>
+              <p className={`text-sm flex items-center gap-1 mt-2 font-medium ${stat.trend === 'up' ? 'text-emerald-600' : 'text-primary'}`}>
                 {stat.trend === 'up' ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
                 <span>{stat.change}</span>
-                <span className="text-muted-foreground font-normal ml-1">vs last month</span>
+                <span className="text-muted-foreground font-normal ml-1">vs yesterday</span>
               </p>
             </CardContent>
           </Card>
@@ -100,8 +101,8 @@ export default function DashboardOverview() {
         <Card className="lg:col-span-4 shadow-sm border-none bg-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Sales Revenue</CardTitle>
-              <CardDescription>Performance trends over the last 6 months.</CardDescription>
+              <CardTitle>Sales Velocity</CardTitle>
+              <CardDescription>Revenue by service hour.</CardDescription>
             </div>
             <Button variant="ghost" size="icon">
               <MoreVertical className="h-4 w-4 text-muted-foreground" />
@@ -143,32 +144,38 @@ export default function DashboardOverview() {
 
         <Card className="lg:col-span-3 shadow-sm border-none bg-card animate-slide-up" style={{ animationDelay: '0.5s' }}>
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
-            <CardDescription>Total of 265 sales this month.</CardDescription>
+            <div className="flex items-center gap-2">
+              <ChefHat className="h-5 w-5 text-primary" />
+              <CardTitle>Kitchen Queue</CardTitle>
+            </div>
+            <CardDescription>Active tickets awaiting service.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {[
-                { name: "Olivia Martin", email: "olivia.martin@email.com", amount: "+$1,999.00" },
-                { name: "Jackson Lee", email: "jackson.lee@email.com", amount: "+$39.00" },
-                { name: "Isabella Nguyen", email: "isabella.nguyen@email.com", amount: "+$299.00" },
-                { name: "William Kim", email: "will@email.com", amount: "+$99.00" },
-                { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+$39.00" },
-              ].map((sale) => (
-                <div key={sale.email} className="flex items-center group cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors">
-                  <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
-                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${sale.name}`} alt={sale.name} />
-                    <AvatarFallback>{sale.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-semibold leading-none">{sale.name}</p>
-                    <p className="text-xs text-muted-foreground">{sale.email}</p>
+                { name: "Table 4", detail: "2x Carbonara, 1x House Red", status: "Prep" },
+                { name: "Table 12", detail: "1x Margherita (No Onions)", status: "Firing" },
+                { name: "Table 7", detail: "3x Garden Salad, 2x Sparkling", status: "Ready" },
+                { name: "Table 2", detail: "1x Ribeye (Medium Rare)", status: "Prep" },
+                { name: "Table 9", detail: "4x Espresso, 2x Tiramisu", status: "Ready" },
+              ].map((ticket) => (
+                <div key={ticket.name} className="flex items-center group cursor-pointer hover:bg-muted/30 p-2 rounded-lg transition-colors border-l-4 border-primary/20 hover:border-primary">
+                  <div className="h-10 w-10 flex items-center justify-center bg-primary/5 rounded-full font-bold text-primary">
+                    {ticket.name.split(' ')[1]}
                   </div>
-                  <div className="ml-auto font-bold text-emerald-600">{sale.amount}</div>
+                  <div className="ml-4 space-y-1">
+                    <p className="text-sm font-semibold leading-none">{ticket.name}</p>
+                    <p className="text-xs text-muted-foreground truncate max-w-[150px]">{ticket.detail}</p>
+                  </div>
+                  <div className={`ml-auto text-xs px-2 py-1 rounded-full font-bold ${
+                    ticket.status === 'Ready' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                  }`}>
+                    {ticket.status}
+                  </div>
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="w-full mt-6">View All Transactions</Button>
+            <Button variant="outline" className="w-full mt-6">View POS System</Button>
           </CardContent>
         </Card>
       </div>

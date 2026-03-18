@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -6,12 +5,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { 
   LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
+  UtensilsCrossed, 
+  ClipboardList, 
   Users, 
   BarChart3, 
   Settings, 
-  Store
+  ChefHat
 } from "lucide-react"
 
 import {
@@ -34,17 +33,17 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Products",
+    title: "Menu Items",
     url: "/dashboard/products",
-    icon: Package,
+    icon: UtensilsCrossed,
   },
   {
-    title: "Orders",
+    title: "Live Orders",
     url: "/dashboard/orders",
-    icon: ShoppingCart,
+    icon: ClipboardList,
   },
   {
-    title: "Customers",
+    title: "Guests",
     url: "/dashboard/customers",
     icon: Users,
   },
@@ -59,16 +58,16 @@ export function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar collapsible="icon" className="border-r bg-card">
       <SidebarHeader className="border-b h-16 flex items-center px-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <Store className="h-6 w-6" />
-          <span className="group-data-[collapsible=icon]:hidden">ShopManager</span>
+          <ChefHat className="h-6 w-6" />
+          <span className="group-data-[collapsible=icon]:hidden">GustoManager</span>
         </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>Operations</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -77,6 +76,7 @@ export function AppSidebar() {
                     asChild 
                     isActive={pathname === item.url}
                     tooltip={item.title}
+                    className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
                   >
                     <Link href={item.url}>
                       <item.icon />
@@ -96,6 +96,7 @@ export function AppSidebar() {
               asChild 
               isActive={pathname === "/dashboard/settings"}
               tooltip="Settings"
+              className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
             >
               <Link href="/dashboard/settings">
                 <Settings />

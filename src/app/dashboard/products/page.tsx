@@ -8,8 +8,9 @@ import {
   Edit, 
   Trash2, 
   Filter,
-  Image as ImageIcon,
-  ArrowUpDown
+  Utensils,
+  ArrowUpDown,
+  Flame
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,64 +44,64 @@ import { Label } from "@/components/ui/label"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
 import Image from "next/image"
 
-const initialProducts = [
-  { id: "PROD-001", name: "Premium Wireless Headphones", category: "Electronics", price: 299.00, stock: 45, status: "Active" },
-  { id: "PROD-002", name: "Leather Smart Watch", category: "Wearables", price: 199.00, stock: 12, status: "Low Stock" },
-  { id: "PROD-003", name: "Ergonomic Desk Chair", category: "Furniture", price: 349.00, stock: 0, status: "Out of Stock" },
-  { id: "PROD-004", name: "Mechanical Keyboard", category: "Accessories", price: 129.00, stock: 89, status: "Active" },
-  { id: "PROD-005", name: "4K Monitor 27\"", category: "Electronics", price: 449.00, stock: 23, status: "Active" },
+const initialMenu = [
+  { id: "MENU-001", name: "Gourmet Pasta Carbonara", category: "Mains", price: 18.50, prepTime: "15m", status: "Available" },
+  { id: "MENU-002", name: "Wood-fired Margherita", category: "Pizza", price: 14.00, prepTime: "10m", status: "Popular" },
+  { id: "MENU-003", name: "Fresh Garden Salad", category: "Starters", price: 9.50, prepTime: "5m", status: "Available" },
+  { id: "MENU-004", name: "Grilled Ribeye Steak", category: "Mains", price: 32.00, prepTime: "25m", status: "Chef Pick" },
+  { id: "MENU-005", name: "Classic Tiramisu", category: "Desserts", price: 8.00, prepTime: "3m", status: "Low Stock" },
 ]
 
-export default function ProductsPage() {
-  const [products] = useState(initialProducts)
-  const productImages = PlaceHolderImages.filter(img => img.id.startsWith("product"))
+export default function MenuManagementPage() {
+  const [menuItems] = useState(initialMenu)
+  const dishImages = PlaceHolderImages.filter(img => img.id.startsWith("dish"))
 
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Catalog Management</h1>
-          <p className="text-muted-foreground">Monitor inventory levels and manage product listings.</p>
+          <h1 className="text-3xl font-bold text-foreground/90">Menu Engineering</h1>
+          <p className="text-muted-foreground">Curate your dishes and monitor item performance.</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="gap-2 shadow-sm">
+            <Button className="gap-2 shadow-sm bg-primary hover:bg-primary/90">
               <Plus className="h-4 w-4" />
-              New Product
+              Add Dish
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
+              <DialogTitle>Add New Menu Item</DialogTitle>
               <DialogDescription>
-                Enter the core details for your new catalog item.
+                Details for the new culinary addition.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="name">Product Name</Label>
-                <Input id="name" placeholder="e.g. Ultra HD Monitor" className="bg-muted/30 border-none" />
+                <Label htmlFor="dish-name">Dish Name</Label>
+                <Input id="dish-name" placeholder="e.g. Lobster Risotto" className="bg-muted/30 border-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="category">Category</Label>
-                  <Input id="category" placeholder="Electronics" className="bg-muted/30 border-none" />
+                  <Label htmlFor="dish-category">Category</Label>
+                  <Input id="dish-category" placeholder="Appetizers" className="bg-muted/30 border-none" />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="price">Price ($)</Label>
-                  <Input id="price" type="number" placeholder="0.00" className="bg-muted/30 border-none" />
+                  <Label htmlFor="dish-price">Price ($)</Label>
+                  <Input id="dish-price" type="number" placeholder="0.00" className="bg-muted/30 border-none" />
                 </div>
               </div>
               <div className="border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-muted/50 transition-all">
-                <div className="p-3 bg-primary/5 rounded-full">
-                  <ImageIcon className="h-6 w-6 text-primary" />
+                <div className="p-3 bg-primary/10 rounded-full">
+                  <Flame className="h-6 w-6 text-primary" />
                 </div>
-                <span className="text-sm font-medium">Click to upload assets</span>
-                <span className="text-xs text-muted-foreground">PNG, JPG up to 5MB</span>
+                <span className="text-sm font-medium">Upload Food Photography</span>
+                <span className="text-xs text-muted-foreground">High-res JPG/PNG</span>
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" className="w-full">Create Product</Button>
+              <Button type="submit" className="w-full bg-primary">Save to Menu</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -109,11 +110,11 @@ export default function ProductsPage() {
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-xl shadow-sm">
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search catalog..." className="pl-10 bg-muted/50 border-none h-10" />
+          <Input placeholder="Search dishes..." className="pl-10 bg-muted/50 border-none h-10" />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
           <Button variant="outline" className="bg-transparent border-input"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
-          <Button variant="outline" className="bg-transparent border-input">Export Data</Button>
+          <Button variant="outline" className="bg-transparent border-input">Export Menu</Button>
         </div>
       </div>
 
@@ -123,51 +124,46 @@ export default function ProductsPage() {
             <TableRow>
               <TableHead className="w-[80px]">Preview</TableHead>
               <TableHead className="cursor-pointer hover:text-foreground">
-                <div className="flex items-center gap-2">Product Name <ArrowUpDown className="h-3 w-3" /></div>
+                <div className="flex items-center gap-2">Dish Name <ArrowUpDown className="h-3 w-3" /></div>
               </TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Unit Price</TableHead>
-              <TableHead>Availability</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Avg Prep</TableHead>
+              <TableHead>Kitchen Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product, idx) => (
-              <TableRow key={product.id} className="hover:bg-muted/20">
+            {menuItems.map((item, idx) => (
+              <TableRow key={item.id} className="hover:bg-muted/20">
                 <TableCell>
                   <div className="relative h-12 w-12 rounded-lg border overflow-hidden shadow-sm">
                     <Image 
-                      src={productImages[idx % productImages.length]?.imageUrl || "https://picsum.photos/seed/product/100/100"} 
-                      alt={product.name}
+                      src={dishImages[idx % dishImages.length]?.imageUrl || "https://picsum.photos/seed/food/100/100"} 
+                      alt={item.name}
                       fill
                       className="object-cover"
                     />
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="font-semibold">{product.name}</div>
-                  <div className="text-[10px] text-muted-foreground font-code mt-0.5">{product.id}</div>
+                  <div className="font-semibold">{item.name}</div>
+                  <div className="text-[10px] text-muted-foreground font-code mt-0.5">{item.id}</div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="font-medium bg-muted/30">{product.category}</Badge>
+                  <Badge variant="outline" className="font-medium bg-muted/30">{item.category}</Badge>
                 </TableCell>
-                <TableCell className="font-medium">${product.price.toFixed(2)}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div className={`h-1.5 w-1.5 rounded-full ${product.stock > 20 ? 'bg-emerald-500' : product.stock > 0 ? 'bg-amber-500' : 'bg-rose-500'}`} />
-                    <span>{product.stock} units</span>
-                  </div>
-                </TableCell>
+                <TableCell className="font-medium">${item.price.toFixed(2)}</TableCell>
+                <TableCell>{item.prepTime}</TableCell>
                 <TableCell>
                   <Badge 
                     variant={
-                      product.status === "Active" ? "default" : 
-                      product.status === "Low Stock" ? "secondary" : "destructive"
+                      item.status === "Popular" ? "default" : 
+                      item.status === "Available" ? "secondary" : "destructive"
                     }
-                    className="shadow-sm"
+                    className={`shadow-sm ${item.status === 'Popular' ? 'bg-orange-500 hover:bg-orange-600' : ''}`}
                   >
-                    {product.status}
+                    {item.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
@@ -178,11 +174,11 @@ export default function ProductsPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuLabel>Product Options</DropdownMenuLabel>
-                      <DropdownMenuItem className="gap-2"><Edit className="h-4 w-4" /> Modify Details</DropdownMenuItem>
-                      <DropdownMenuItem className="gap-2"><Plus className="h-4 w-4" /> Restock Item</DropdownMenuItem>
+                      <DropdownMenuLabel>Menu Options</DropdownMenuLabel>
+                      <DropdownMenuItem className="gap-2"><Edit className="h-4 w-4" /> Edit Recipe</DropdownMenuItem>
+                      <DropdownMenuItem className="gap-2"><Utensils className="h-4 w-4" /> Stock Check</DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="gap-2 text-rose-600 focus:text-rose-600"><Trash2 className="h-4 w-4" /> Remove from Catalog</DropdownMenuItem>
+                      <DropdownMenuItem className="gap-2 text-rose-600 focus:text-rose-600"><Trash2 className="h-4 w-4" /> Remove from Menu</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
