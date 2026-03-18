@@ -10,7 +10,8 @@ import {
   Users, 
   BarChart3, 
   Settings, 
-  ChefHat
+  ChefHat,
+  TicketPercent
 } from "lucide-react"
 
 import {
@@ -46,6 +47,11 @@ const navItems = [
     title: "Guests",
     url: "/dashboard/customers",
     icon: Users,
+  },
+  {
+    title: "Coupons",
+    url: "/dashboard/coupons",
+    icon: TicketPercent,
   },
   {
     title: "Analytics",
