@@ -19,6 +19,30 @@
       "imageHint": "garden salad"
     },
     {
+      "id": "indian-naan",
+      "description": "Hot Butter Naan",
+      "imageUrl": "https://picsum.photos/seed/naan/400/400",
+      "imageHint": "indian naan"
+    },
+    {
+      "id": "indian-biryani",
+      "description": "Authentic Chicken Biryani",
+      "imageUrl": "https://picsum.photos/seed/biryani/400/400",
+      "imageHint": "indian biryani"
+    },
+    {
+      "id": "indian-snacks",
+      "description": "Samosa and Tikka Platter",
+      "imageUrl": "https://picsum.photos/seed/snacks/400/400",
+      "imageHint": "indian snacks"
+    },
+    {
+      "id": "indian-drinks",
+      "description": "Mango Lassi and Chai",
+      "imageUrl": "https://picsum.photos/seed/lassi/400/400",
+      "imageHint": "indian drinks"
+    },
+    {
       "id": "chef-avatar",
       "description": "Head Chef Profile",
       "imageUrl": "https://picsum.photos/seed/chef/100/100",

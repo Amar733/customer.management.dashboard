@@ -12,7 +12,6 @@ import {
   ArrowUpDown,
   Flame,
   Coffee,
-  Pizza,
   ChefHat
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -45,35 +44,46 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlaceHolderImages } from "@/lib/placeholder-images"
-import Image from "next/image"
 
 const initialMenu = [
-  // Chappatis
+  // Chappatis & Breads
   { id: "CHAP-001", name: "Butter Naan", category: "Chappatis", price: 2.50, prepTime: "5m", status: "Popular" },
   { id: "CHAP-002", name: "Garlic Naan", category: "Chappatis", price: 3.00, prepTime: "5m", status: "Available" },
   { id: "CHAP-003", name: "Tandoori Roti", category: "Chappatis", price: 1.50, prepTime: "4m", status: "Available" },
+  { id: "CHAP-004", name: "Cheese Naan", category: "Chappatis", price: 4.00, prepTime: "6m", status: "Chef Pick" },
+  { id: "CHAP-005", name: "Rumali Roti", category: "Chappatis", price: 2.00, prepTime: "3m", status: "Available" },
+  { id: "CHAP-006", name: "Aloo Paratha", category: "Chappatis", price: 5.50, prepTime: "10m", status: "Available" },
+  { id: "CHAP-007", name: "Paneer Kulcha", category: "Chappatis", price: 6.00, prepTime: "12m", status: "Available" },
   
-  // Biryani
+  // Biryani & Rice
   { id: "BIRY-001", name: "Hyderabadi Chicken Biryani", category: "Biryani", price: 14.99, prepTime: "20m", status: "Popular" },
   { id: "BIRY-002", name: "Mutton Dum Biryani", category: "Biryani", price: 17.50, prepTime: "25m", status: "Chef Pick" },
   { id: "BIRY-003", name: "Vegetable Biryani", category: "Biryani", price: 12.00, prepTime: "15m", status: "Available" },
+  { id: "BIRY-004", name: "Egg Dum Biryani", category: "Biryani", price: 11.50, prepTime: "15m", status: "Available" },
+  { id: "BIRY-005", name: "Prawn Biryani", category: "Biryani", price: 18.99, prepTime: "22m", status: "Seasonal" },
+  { id: "BIRY-006", name: "Jeera Rice", category: "Biryani", price: 6.50, prepTime: "8m", status: "Available" },
 
-  // Snacks
+  // Snacks & Appetizers
   { id: "SNACK-001", name: "Vegetable Samosa (2pcs)", category: "Snacks", price: 5.50, prepTime: "8m", status: "Available" },
   { id: "SNACK-002", name: "Paneer Tikka", category: "Snacks", price: 11.00, prepTime: "15m", status: "Popular" },
-  { id: "SNACK-003", name: "Chicken Wings (6pcs)", category: "Snacks", price: 9.00, prepTime: "12m", status: "Low Stock" },
+  { id: "SNACK-003", name: "Chicken Tikka (6pcs)", category: "Snacks", price: 12.50, prepTime: "18m", status: "Popular" },
+  { id: "SNACK-004", name: "Onion Bhaji", category: "Snacks", price: 6.50, prepTime: "10m", status: "Available" },
+  { id: "SNACK-005", name: "Pani Puri (6pcs)", category: "Snacks", price: 7.00, prepTime: "5m", status: "Street Favorite" },
+  { id: "SNACK-006", name: "Hara Bhara Kabab", category: "Snacks", price: 9.50, prepTime: "12m", status: "Available" },
+  { id: "SNACK-007", name: "Chicken 65", category: "Snacks", price: 13.00, prepTime: "15m", status: "Hot" },
 
-  // Drinks
+  // Drinks & Beverages
   { id: "DRINK-001", name: "Mango Lassi", category: "Drinks", price: 4.50, prepTime: "3m", status: "Popular" },
   { id: "DRINK-002", name: "Masala Chai", category: "Drinks", price: 2.50, prepTime: "4m", status: "Available" },
   { id: "DRINK-003", name: "Fresh Lime Soda", category: "Drinks", price: 3.50, prepTime: "3m", status: "Available" },
+  { id: "DRINK-004", name: "Sweet Lassi", category: "Drinks", price: 4.00, prepTime: "3m", status: "Available" },
+  { id: "DRINK-005", name: "Jaljeera", category: "Drinks", price: 3.00, prepTime: "2m", status: "Digestive" },
+  { id: "DRINK-006", name: "Filter Coffee", category: "Drinks", price: 3.00, prepTime: "5m", status: "Available" },
+  { id: "DRINK-007", name: "Thandai", category: "Drinks", price: 5.00, prepTime: "5m", status: "Seasonal" },
 ]
 
 export default function MenuManagementPage() {
   const [menuItems] = useState(initialMenu)
-  const dishImages = PlaceHolderImages.filter(img => img.id.startsWith("dish"))
-
   const categories = ["Chappatis", "Biryani", "Snacks", "Drinks"]
 
   return (
@@ -139,9 +149,9 @@ export default function MenuManagementPage() {
       </div>
 
       <Tabs defaultValue="Chappatis" className="w-full">
-        <TabsList className="bg-muted/50 p-1 mb-6">
+        <TabsList className="bg-muted/50 p-1 mb-6 flex-wrap h-auto">
           {categories.map(cat => (
-            <TabsTrigger key={cat} value={cat} className="px-6">
+            <TabsTrigger key={cat} value={cat} className="px-6 py-2">
               {cat}
             </TabsTrigger>
           ))}
@@ -164,7 +174,7 @@ export default function MenuManagementPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {menuItems.filter(item => item.category === cat).map((item, idx) => (
+                  {menuItems.filter(item => item.category === cat).map((item) => (
                     <TableRow key={item.id} className="hover:bg-muted/20">
                       <TableCell>
                         <div className="relative h-12 w-12 rounded-lg border overflow-hidden shadow-sm bg-muted/20 flex items-center justify-center">
@@ -182,12 +192,12 @@ export default function MenuManagementPage() {
                       <TableCell>
                         <Badge 
                           variant={
-                            item.status === "Popular" ? "default" : 
-                            item.status === "Chef Pick" ? "default" : "secondary"
+                            item.status === "Popular" || item.status === "Chef Pick" || item.status === "Hot" ? "default" : "secondary"
                           }
                           className={`shadow-sm ${
-                            item.status === 'Popular' ? 'bg-orange-500 hover:bg-orange-600' : 
-                            item.status === 'Chef Pick' ? 'bg-indigo-500 hover:bg-indigo-600' : ''
+                            item.status === 'Popular' || item.status === 'Hot' ? 'bg-orange-500 hover:bg-orange-600 text-white' : 
+                            item.status === 'Chef Pick' ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : 
+                            item.status === 'Street Favorite' ? 'bg-emerald-500 hover:bg-emerald-600 text-white' : ''
                           }`}
                         >
                           {item.status}
