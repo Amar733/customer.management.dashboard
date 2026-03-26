@@ -6,15 +6,13 @@ import { usePathname } from "next/navigation"
 import { 
   LayoutDashboard, 
   UtensilsCrossed, 
-  ClipboardList, 
   Users, 
   BarChart3, 
   Settings, 
   ChefHat,
   TicketPercent,
   PartyPopper,
-  Flame,
-  ArrowRight
+  Flame
 } from "lucide-react"
 
 import {
@@ -30,48 +28,61 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar"
 import { Badge } from "@/components/ui/badge"
+import { useUser } from "@/firebase/provider"
 
 const navItems = [
   {
     title: "Executive Overview",
     url: "/dashboard",
     icon: LayoutDashboard,
+    roles: ["admin", "staff", "customer"]
   },
   {
     title: "Culinary Catalog",
     url: "/dashboard/products",
     icon: UtensilsCrossed,
+    roles: ["admin", "staff", "customer"]
   },
   {
     title: "Kitchen Feed",
     url: "/dashboard/orders",
     icon: Flame,
-    badge: "8"
+    badge: "8",
+    roles: ["admin", "staff"]
   },
   {
     title: "Guest Directory",
     url: "/dashboard/customers",
     icon: Users,
+    roles: ["admin", "staff"]
   },
   {
     title: "Festive Hub",
     url: "/dashboard/offers",
     icon: PartyPopper,
+    roles: ["admin", "staff", "customer"]
   },
   {
     title: "Promo Codes",
     url: "/dashboard/coupons",
     icon: TicketPercent,
+    roles: ["admin"]
   },
   {
     title: "Deep Analytics",
     url: "/dashboard/analytics",
     icon: BarChart3,
+    roles: ["admin"]
   },
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { role } = useUser()
+
+  const filteredItems = navItems.filter(item => 
+    !item.roles || (role && item.roles.includes(role))
+  )
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/40 bg-card/80 backdrop-blur-xl">
@@ -85,10 +96,12 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="px-3 pt-4">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">Back of House</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">
+            {role === 'customer' ? 'Guest Lounge' : 'Back of House'}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {filteredItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 
@@ -114,19 +127,21 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="p-3 border-t border-border/40">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton 
-              asChild 
-              isActive={pathname === "/dashboard/settings"}
-              tooltip="Configurations"
-              className="h-11 px-3 rounded-xl transition-all data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
-            >
-              <Link href="/dashboard/settings">
-                <Settings />
-                <span className="font-bold text-sm tracking-tight">Configurations</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {role === 'admin' && (
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                asChild 
+                isActive={pathname === "/dashboard/settings"}
+                tooltip="Configurations"
+                className="h-11 px-3 rounded-xl transition-all data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+              >
+                <Link href="/dashboard/settings">
+                  <Settings />
+                  <span className="font-bold text-sm tracking-tight">Configurations</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
