@@ -1,0 +1,360 @@
+{
+  "entities": {
+    "Role": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Role",
+      "type": "object",
+      "description": "Defines the access levels and permissions within the application (e.g., Admin, Staff, Customer).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Role entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the role (e.g., 'Admin', 'Staff', 'Customer')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the permissions and responsibilities associated with this role."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ]
+    },
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user account in the system, encompassing both internal staff/admin and external customers, linking to their assigned role.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address, typically used for authentication and contact.",
+          "format": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The user's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The user's last name."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "An optional contact phone number for the user."
+        },
+        "roleId": {
+          "type": "string",
+          "description": "Reference to the Role assigned to this user. (Relationship: Role 1:N UserProfile)"
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "The primary shipping address for the user, relevant for customer roles."
+        },
+        "billingAddress": {
+          "type": "string",
+          "description": "The primary billing address for the user, relevant for customer roles."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user profile was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user profile was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "roleId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product available for sale in the shop, including its details and inventory information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the product."
+        },
+        "price": {
+          "type": "number",
+          "description": "The current selling price of the product."
+        },
+        "stockQuantity": {
+          "type": "number",
+          "description": "The current quantity of the product available in stock."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category or type of the product (e.g., 'Electronics', 'Apparel')."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the main image of the product.",
+          "format": "uri"
+        },
+        "sku": {
+          "type": "string",
+          "description": "Stock Keeping Unit, a unique identifier for the product inventory."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the product was first added.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the product details were last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "price",
+        "stockQuantity",
+        "category",
+        "imageUrl",
+        "sku",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a customer's purchase, containing general order information and linking to specific order items.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Order entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile (customer) who placed the order. (Relationship: UserProfile 1:N Order)"
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "The date and time when the order was placed.",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the order (e.g., 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')."
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "The total monetary amount of the order, including shipping and taxes."
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "The address where the order is to be shipped."
+        },
+        "billingAddress": {
+          "type": "string",
+          "description": "The address used for billing the order."
+        },
+        "paymentStatus": {
+          "type": "string",
+          "description": "The payment status of the order (e.g., 'Paid', 'Pending', 'Refunded')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the order was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the order was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "orderDate",
+        "status",
+        "totalAmount",
+        "shippingAddress",
+        "billingAddress",
+        "paymentStatus",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "OrderItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OrderItem",
+      "type": "object",
+      "description": "Represents a single item within an order, detailing the product, quantity, and price at the time of purchase.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the OrderItem entity."
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Reference to the Order this item belongs to. (Relationship: Order 1:N OrderItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the Product purchased. (Relationship: Product 1:N OrderItem)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of the product in this order item."
+        },
+        "priceAtPurchase": {
+          "type": "number",
+          "description": "The price of the product at the time it was added to the order. This ensures historical price accuracy."
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "The calculated subtotal for this order item (quantity * priceAtPurchase)."
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "productId",
+        "quantity",
+        "priceAtPurchase",
+        "subtotal"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/roles/{roleId}",
+        "definition": {
+          "entityName": "Role",
+          "schema": {
+            "$ref": "#/backend/entities/Role"
+          },
+          "description": "Stores the definition of various roles (e.g., Admin, Staff, Customer). This collection is primarily for reference and configuration, and its documents are globally readable for rule validation context but not typically writable by end-users. Access to this collection itself is restricted to system-level operations or read-only access for reference."
+        }
+      },
+      {
+        "path": "/user_roles/{userId}",
+        "definition": {
+          "entityName": "UserRole",
+          "schema": {
+            "$ref": "#/backend/entities/Role"
+          },
+          "description": "Stores the active role assigned to each user. Each document's ID is the Firebase Authentication UID of the user. This collection is crucial for implementing role-based access control (DBAC) in security rules by allowing direct lookup of a user's role without dependency on the UserProfile document. Documents typically contain a 'role' field (e.g., {'role': 'admin'}). Only authenticated users can read their own role; only Admin can write.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique Firebase Authentication UID of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/profile",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores the detailed profile information for a specific user. The document ID for 'profile' is typically the same as the `{userId}`. Access is restricted such that a user can only read/write their own profile, while 'staff' and 'admin' roles (determined by `/user_roles`) can read all profiles and manage them.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique Firebase Authentication UID of the user, matching the `id` field in the UserProfile document."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores information about products available in the shop. All documents in this collection are globally readable by all roles (Customer, Staff, Admin). Write operations (create, update, delete) are restricted to 'staff' and 'admin' roles, as determined by the `/user_roles` collection.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique identifier for a product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/orders/{orderId}",
+        "definition": {
+          "entityName": "Order",
+          "schema": {
+            "$ref": "#/backend/entities/Order"
+          },
+          "description": "Stores details for each customer order. Each document includes the `userId` field to link to the customer. Customers can only read and list their own orders (`where('userId', '==', request.auth.uid)`). 'Staff' and 'admin' roles (determined by `/user_roles`) have full read/write access to all orders for management purposes.",
+          "params": [
+            {
+              "name": "orderId",
+              "description": "The unique identifier for an order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/orders/{orderId}/items/{orderItemId}",
+        "definition": {
+          "entityName": "OrderItem",
+          "schema": {
+            "$ref": "#/backend/entities/OrderItem"
+          },
+          "description": "A subcollection storing individual items within a specific order. Each OrderItem document will include a denormalized `userId` field (copied from its parent Order) to ensure authorization independence. This allows security rules to verify `request.auth.uid == resource.data.userId` directly, enabling secure and efficient access checks for customers without needing to fetch the parent Order document. 'Staff' and 'admin' roles have full access.",
+          "params": [
+            {
+              "name": "orderId",
+              "description": "The unique identifier for the parent order."
+            },
+            {
+              "name": "orderItemId",
+              "description": "The unique identifier for an item within the order."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to enforce role-based access for Admin, Staff, and Customer while strictly adhering to core design principles, especially Authorization Independence and enabling Query as Authorization Predicate (QAP).\n\n**Authorization Independence (CRITICAL):**\n1.  **Role-Based Access:** A dedicated top-level collection, `/user_roles/{userId}`, is introduced. Each document in this collection will directly store a user's assigned role (e.g., `{'role': 'admin'}`). This denormalization allows security rules to determine a user's role with a single, independent `get()` call (or `exists()` check if using boolean flags) at the top level of the ruleset, completely eliminating hierarchical authorization dependencies related to roles on other data. This is crucial for atomic operations and simplifies rule debugging.\n2.  **Subcollection Access (Order Items):** For the `OrderItem` entity, which resides in the subcollection `/orders/{orderId}/items/{orderItemId}`, the `userId` from its parent `Order` will be explicitly denormalized into *each `OrderItem` document*. This means that when a user tries to access an `OrderItem`, the security rules can directly check `resource.data.userId == request.auth.uid` without needing to perform a `get()` operation on the parent `/orders/{orderId}` document. This ensures atomic access checks for subcollections and maintains authorization independence.\n\n**Query as Authorization Predicate (QAPs):**\n1.  **Structural Segregation & Denormalization:**\n    *   **`UserProfiles` (`/users/{userId}/profile`):** User profiles are placed under a user-specific path, making `read/write` access for the owner (where `{userId}` matches `request.auth.uid`) simple and efficient. Staff and Admin roles (determined via `/user_roles`) can be granted `list` and `get` access to all profiles for management, ensuring QAPs by not mixing different security postures.\n    *   **`Products` (`/products/{productId}`):** This collection maintains a homogeneous security posture where all documents are publicly readable (by customers, staff, admin) for browsing. Write operations (create, update, delete) are restricted to 'staff' or 'admin' roles, which is enforced by rules based on the `/user_roles` lookup.\n    *   **`Orders` (`/orders/{orderId}`):** Each `Order` document explicitly includes the `userId` of the customer. This enables customers to perform secure `list` queries like `db.collection('orders').where('userId', '==', request.auth.uid)`, directly fulfilling the QAP requirement. Staff and Admin roles can `list` all orders, again enforced by rules based on `/user_roles`.\n    *   **`OrderItems` (`/orders/{orderId}/items/{orderItemId}`):** As mentioned, the `userId` is denormalized into each `OrderItem`. This allows customers to `list` order items for *their own orders* by querying the subcollection, with rules checking `resource.data.userId == request.auth.uid` ensuring that only relevant data is returned without complex server-side filtering or multiple `get()` calls.\n\nThis design prioritizes a flat structure for common entities where possible, leverages path-based security for user-owned data, and employs critical denormalization of authorization context (`user_roles` and `userId` in `OrderItem`) to achieve highly debuggable, secure, and scalable Firestore rules that support efficient list operations."
+  }
+}

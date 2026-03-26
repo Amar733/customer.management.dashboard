@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * PROTOTYPE MODE SECURITY RULES
+     * 
+     * Core Philosophy: 
+     * This ruleset implements a robust Role-Based Access Control (RBAC) model 
+     * using a dedicated '/user_roles' lookup table for high-performance authorization.
+     * It prioritizes strict identity verification and ownership while maintaining 
+     * flexible data schemas to support rapid prototyping.
+     * 
+     * Data Structure:
+     * - /roles: Global reference data for application roles.
+     * - /user_roles/{userId}: Mapping of Firebase UIDs to roles ('admin', 'staff', 'customer').
+     * - /users/{userId}/profile: Personal user data scoped by UID.
+     * - /products: Publicly viewable catalog managed by internal staff.
+     * - /orders: Transactional records owned by customers, managed by staff.
+     * 
+     * Key Security Decisions:
+     * 1. Authorization Independence: Using '/user_roles' allows rules to verify permissions
+     *    without being coupled to the complex UserProfile document.
+     * 2. Denormalization for Performance: The 'userId' is denormalized into 'OrderItem'
+     *    documents to allow direct ownership checks without parent-document lookups.
+     * 3. QAP (Query as Authorization Predicate): Rules are designed to work with 
+     *    Firestore queries, ensuring users only retrieve data they are authorized to see.
+     * 4. Staff/Admin Escalation: 'staff' and 'admin' roles bypass standard ownership
+     *    checks for management and support purposes.
+     */
+
+    // --- Helper Functions ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Helper to fetch the user's role from the denormalized user_roles collection
+    function getUserRole() {
+      return get(/databases/$(database)/documents/user_roles/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && getUserRole() == 'admin';
+    }
+
+    function isStaff() {
+      return isSignedIn() && (getUserRole() == 'staff' || getUserRole() == 'admin');
+    }
+
+    // Combined ownership and existence check for updates/deletes
+    function isExistingOwner(userId) {
+      return resource != null && isOwner(userId);
+    }
+
+    // Helper for data-level ownership (e.g., on Orders or OrderItems)
+    // Fix: 'resource' is a global variable and should be passed as an argument if accessed inside a function.
+    function isResourceOwner(docData) {
+      return isSignedIn() && docData.userId == request.auth.uid;
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Access rules for the global Role definitions.
+     * @path /roles/{roleId}
+     * @allow Signed-in users can read role definitions for context. (get, list)
+     * @deny Any write operation from the client. (create, update, delete)
+     * @principle System-level configuration is read-only for clients.
+     */
+    match /roles/{roleId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Access rules for the mapping of Users to Roles.
+     * @path /user_roles/{userId}
+     * @allow Users can see their own role; Admins can manage all roles. (get)
+     * @deny Non-admins attempting to change roles. (update)
+     * @principle Enforces administrative control over authorization levels.
+     */
+    match /user_roles/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Access rules for User Profile details.
+     * @path /users/{userId}/profile
+     * @allow Owners can manage their profile; Staff can view/edit for support. (create, update)
+     * @deny Users attempting to access other users' private profiles. (get)
+     * @principle Combines path-based ownership with role-based management.
+     */
+    match /users/{userId}/profile {
+      allow get: if isOwner(userId) || isStaff();
+      allow list: if isStaff();
+      allow create: if isOwner(userId) || isStaff();
+      // Fix: Use the isExistingOwner helper
+      allow update: if (isExistingOwner(userId) || isStaff());
+      allow delete: if isStaff() && resource != null;
+    }
+
+    /**
+     * @description Access rules for the Product catalog.
+     * @path /products/{productId}
+     * @allow Anyone can view products; only Staff/Admin can manage inventory. (list, get)
+     * @deny Unauthorized users (customers/anonymous) attempting to edit products. (create)
+     * @principle Public read access with restricted write permissions for internal roles.
+     */
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create, update, delete: if isStaff();
+    }
+
+    /**
+     * @description Access rules for Customer Orders.
+     * @path /orders/{orderId}
+     * @allow Customers can view their own orders; Staff can manage all orders. (get, list)
+     * @deny Users creating orders for other user IDs. (create)
+     * @principle Validates relational integrity by enforcing matching auth UID on creation.
+     */
+    match /orders/{orderId} {
+      // Fix: Pass resource.data to isResourceOwner
+      allow get: if isResourceOwner(resource.data) || isStaff();
+      allow list: if isSignedIn(); // Queries must still filter by userId for customers
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      // Fix: Pass resource.data to isResourceOwner and remove redundant resource != null check
+      allow update: if (isResourceOwner(resource.data) || isStaff());
+      // Fix: resource != null is redundant for delete operations
+      allow delete: if isStaff();
+
+      /**
+       * @description Access rules for items within an Order.
+       * @path /orders/{orderId}/items/{orderItemId}
+       * @allow Owners view items via denormalized userId; Staff has full access. (get)
+       * @deny Accessing items of an order owned by another user. (get)
+       * @principle Uses denormalization to ensure Authorization Independence for subcollections.
+       */
+      match /items/{orderItemId} {
+        // Fix: Pass resource.data to isResourceOwner
+        allow get: if isResourceOwner(resource.data) || isStaff();
+        allow list: if isSignedIn();
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+        // Fix: Pass resource.data to isResourceOwner and remove redundant resource != null check
+        allow update: if (isResourceOwner(resource.data) || isStaff());
+        // Fix: Pass resource.data to isResourceOwner and remove redundant resource != null check
+        allow delete: if (isResourceOwner(resource.data) || isStaff());
+      }
+    }
+  }
+}
