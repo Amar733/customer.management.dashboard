@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -14,7 +13,9 @@ import {
   TicketPercent,
   PartyPopper,
   Flame,
-  UserCircle
+  UserCircle,
+  ShieldCheck,
+  Briefcase
 } from "lucide-react"
 
 import {
@@ -40,6 +41,7 @@ import {
 } from "@/components/ui/select"
 import { doc, setDoc } from "firebase/firestore"
 import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 
 const navItems = [
   {
@@ -89,11 +91,14 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const { user, role } = useUser()
+  const { user, role, isUserLoading } = useUser()
   const firestore = useFirestore()
 
+  // During loading or if role is missing, default to customer for prototyping visibility
+  const currentRole = role || 'customer'
+
   const filteredItems = navItems.filter(item => 
-    !item.roles || (role && item.roles.includes(role))
+    !item.roles || item.roles.includes(currentRole)
   )
 
   const handleRoleChange = async (newRole: string) => {
@@ -118,10 +123,11 @@ export function AppSidebar() {
           <span className="group-data-[collapsible=icon]:hidden">Gusto<span className="text-foreground/80">Manager</span></span>
         </Link>
       </SidebarHeader>
+      
       <SidebarContent className="px-3 pt-4">
         <SidebarGroup>
           <SidebarGroupLabel className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mb-2">
-            {role === 'customer' ? 'Guest Lounge' : 'Back of House'}
+            Restaurant Management
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -149,9 +155,10 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter className="p-4 border-t border-border/40 space-y-4">
         <SidebarMenu>
-          {role === 'admin' && (
+          {(currentRole === 'admin' || currentRole === 'staff') && (
             <SidebarMenuItem>
               <SidebarMenuButton 
                 asChild 
@@ -168,21 +175,32 @@ export function AppSidebar() {
           )}
         </SidebarMenu>
 
-        <div className="group-data-[collapsible=icon]:hidden space-y-2 px-2 pt-2 border-t">
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-            <UserCircle className="h-3.3 w-3.3" />
-            Prototype Role
+        <div className="group-data-[collapsible=icon]:hidden pt-2">
+          <div className="bg-muted/30 rounded-2xl p-3 border border-border/40 space-y-3">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Prototype Identity
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="role-select" className="text-[10px] font-bold text-muted-foreground px-1">Active Role</Label>
+              <Select value={currentRole} onValueChange={handleRoleChange}>
+                <SelectTrigger id="role-select" className="h-9 bg-background border-none shadow-sm font-bold text-xs rounded-xl focus:ring-primary/20">
+                  <SelectValue placeholder="Select Role" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-none shadow-2xl">
+                  <SelectItem value="admin" className="rounded-lg font-bold text-xs flex items-center gap-2">
+                    Administrator
+                  </SelectItem>
+                  <SelectItem value="staff" className="rounded-lg font-bold text-xs flex items-center gap-2">
+                    Kitchen Staff
+                  </SelectItem>
+                  <SelectItem value="customer" className="rounded-lg font-bold text-xs flex items-center gap-2">
+                    Guest View
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <Select value={role || "customer"} onValueChange={handleRoleChange}>
-            <SelectTrigger className="h-9 bg-muted/50 border-none font-bold text-xs rounded-xl focus:ring-primary/20">
-              <SelectValue placeholder="Select Role" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl border-none shadow-2xl">
-              <SelectItem value="admin" className="rounded-lg font-bold text-xs">Administrator</SelectItem>
-              <SelectItem value="staff" className="rounded-lg font-bold text-xs">Kitchen Staff</SelectItem>
-              <SelectItem value="customer" className="rounded-lg font-bold text-xs">Guest View</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </SidebarFooter>
     </Sidebar>

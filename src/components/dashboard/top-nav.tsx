@@ -24,12 +24,15 @@ export function TopNav() {
   return (
     <header className="h-16 border-b border-border/40 bg-white/60 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-20">
       <div className="flex items-center gap-6 flex-1">
-        <SidebarTrigger className="h-10 w-10 hover:bg-primary/5 text-primary rounded-xl" />
+        <div className="flex items-center gap-2">
+          <SidebarTrigger className="h-10 w-10 hover:bg-primary/5 text-primary rounded-xl" />
+          <span className="hidden sm:block text-xs font-black uppercase tracking-widest text-muted-foreground/40 ml-2">Navigation</span>
+        </div>
         <div className="relative max-w-md w-full hidden md:block group">
           <Search className="absolute left-4 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
           <Input
             type="search"
-            placeholder="Search menu, offers, staff..."
+            placeholder="Search menu, staff, or guests..."
             className="pl-12 bg-muted/40 border-none h-10 rounded-xl focus:ring-primary/20 transition-all"
           />
         </div>
@@ -69,15 +72,15 @@ export function TopNav() {
           <DropdownMenuContent className="w-64 rounded-2xl p-2 border-none shadow-2xl" align="end" forceMount>
             <DropdownMenuLabel className="p-3">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-black leading-none uppercase tracking-tight">{user?.displayName || "User"}</p>
+                <p className="text-sm font-black leading-none uppercase tracking-tight">{user?.displayName || "User Account"}</p>
                 <p className="text-xs leading-none text-muted-foreground font-medium">{role === 'admin' ? 'System Administrator' : role === 'staff' ? 'Bistro Staff' : 'Valued Guest'}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-border/50" />
             <DropdownMenuItem className="p-3 rounded-xl gap-3 cursor-pointer"><User className="h-4 w-4" /> Personal Profile</DropdownMenuItem>
-            {role !== 'customer' && <DropdownMenuItem className="p-3 rounded-xl gap-3 cursor-pointer">Shift Details</DropdownMenuItem>}
+            {role !== 'customer' && <DropdownMenuItem className="p-3 rounded-xl gap-3 cursor-pointer">Shift Schedule</DropdownMenuItem>}
             <DropdownMenuSeparator className="bg-border/50" />
-            <DropdownMenuItem className="p-3 rounded-xl gap-3 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/5 font-bold">End Session</DropdownMenuItem>
+            <DropdownMenuItem className="p-3 rounded-xl gap-3 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/5 font-bold">Log Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
