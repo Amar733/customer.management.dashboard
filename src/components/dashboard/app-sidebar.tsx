@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -12,11 +13,7 @@ import {
   ChefHat,
   TicketPercent,
   PartyPopper,
-  Flame,
-  UserCircle,
   ShieldCheck,
-  Briefcase,
-  ShoppingBag,
   Receipt
 } from "lucide-react"
 
@@ -41,8 +38,9 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select"
-import { doc, setDoc } from "firebase/firestore"
+import { doc } from "firebase/firestore"
 import { Label } from "@/components/ui/label"
+import { setDocumentNonBlocking } from "@/firebase/non-blocking-updates"
 
 const navItems = [
   {
@@ -102,16 +100,18 @@ export function AppSidebar() {
     !item.roles || item.roles.includes(currentRole)
   )
 
-  const handleRoleChange = async (newRole: string) => {
+  const handleRoleChange = (newRole: string) => {
     if (!user || !firestore) return;
-    try {
-      await setDoc(doc(firestore, 'user_roles', user.uid), {
+
+    // Use non-blocking write to update the user's role in the prototype metadata
+    setDocumentNonBlocking(
+      doc(firestore, 'user_roles', user.uid),
+      {
         role: newRole,
         updatedAt: new Date().toISOString()
-      }, { merge: true });
-    } catch (error) {
-      // Errors are handled by the global error listener
-    }
+      },
+      { merge: true }
+    );
   }
 
   return (

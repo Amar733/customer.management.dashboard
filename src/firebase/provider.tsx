@@ -4,7 +4,7 @@
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore, doc, onSnapshot } from 'firebase/firestore';
-import { Auth, User, onAuthStateChanged } from 'firebase/auth';
+import { Auth, User, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 
 interface FirebaseProviderProps {
@@ -67,10 +67,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   });
 
   useEffect(() => {
-    if (!auth) {
-      setUserAuthState({ user: null, role: null, isUserLoading: false, userError: new Error("Auth service not provided.") });
-      return;
-    }
+    if (!auth || !firestore) return;
 
     let roleUnsubscribe: (() => void) | null = null;
 
@@ -92,12 +89,15 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               setUserAuthState({ user: firebaseUser, role, isUserLoading: false, userError: null });
             },
             (error) => {
-              console.error("Error listening to user role:", error);
+              // Fallback to customer if role document cannot be read
               setUserAuthState({ user: firebaseUser, role: 'customer', isUserLoading: false, userError: null });
             }
           );
         } else {
-          setUserAuthState({ user: null, role: null, isUserLoading: false, userError: null });
+          // If no user is present, sign in anonymously to enable RBAC persistence for the session
+          signInAnonymously(auth).catch((error) => {
+            setUserAuthState({ user: null, role: null, isUserLoading: false, userError: error });
+          });
         }
       },
       (error) => {
