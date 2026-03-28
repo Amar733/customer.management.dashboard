@@ -1,8 +1,9 @@
+
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
-import { Firestore, doc, getDoc } from 'firebase/firestore';
+import { Firestore, doc, onSnapshot } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 
@@ -71,18 +72,30 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(
+    let roleUnsubscribe: (() => void) | null = null;
+
+    const authUnsubscribe = onAuthStateChanged(
       auth,
-      async (firebaseUser) => {
+      (firebaseUser) => {
+        // Clean up previous role listener if it exists
+        if (roleUnsubscribe) {
+          roleUnsubscribe();
+          roleUnsubscribe = null;
+        }
+
         if (firebaseUser) {
-          try {
-            const roleDoc = await getDoc(doc(firestore, 'user_roles', firebaseUser.uid));
-            const role = roleDoc.exists() ? roleDoc.data().role : 'customer';
-            setUserAuthState({ user: firebaseUser, role, isUserLoading: false, userError: null });
-          } catch (err) {
-            console.error("Error fetching user role:", err);
-            setUserAuthState({ user: firebaseUser, role: 'customer', isUserLoading: false, userError: null });
-          }
+          // Set up a real-time listener for the user's role
+          roleUnsubscribe = onSnapshot(
+            doc(firestore, 'user_roles', firebaseUser.uid),
+            (roleDoc) => {
+              const role = roleDoc.exists() ? roleDoc.data().role : 'customer';
+              setUserAuthState({ user: firebaseUser, role, isUserLoading: false, userError: null });
+            },
+            (error) => {
+              console.error("Error listening to user role:", error);
+              setUserAuthState({ user: firebaseUser, role: 'customer', isUserLoading: false, userError: null });
+            }
+          );
         } else {
           setUserAuthState({ user: null, role: null, isUserLoading: false, userError: null });
         }
@@ -91,7 +104,11 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         setUserAuthState({ user: null, role: null, isUserLoading: false, userError: error });
       }
     );
-    return () => unsubscribe();
+
+    return () => {
+      authUnsubscribe();
+      if (roleUnsubscribe) roleUnsubscribe();
+    };
   }, [auth, firestore]);
 
   const contextValue = useMemo((): FirebaseContextState => {

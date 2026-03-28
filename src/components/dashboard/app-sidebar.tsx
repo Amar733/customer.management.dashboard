@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -12,7 +13,8 @@ import {
   ChefHat,
   TicketPercent,
   PartyPopper,
-  Flame
+  Flame,
+  UserCircle
 } from "lucide-react"
 
 import {
@@ -28,7 +30,16 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar"
 import { Badge } from "@/components/ui/badge"
-import { useUser } from "@/firebase/provider"
+import { useUser, useFirestore } from "@/firebase/provider"
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select"
+import { doc, setDoc } from "firebase/firestore"
+import { Label } from "@/components/ui/label"
 
 const navItems = [
   {
@@ -78,11 +89,24 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const { role } = useUser()
+  const { user, role } = useUser()
+  const firestore = useFirestore()
 
   const filteredItems = navItems.filter(item => 
     !item.roles || (role && item.roles.includes(role))
   )
+
+  const handleRoleChange = async (newRole: string) => {
+    if (!user || !firestore) return;
+    try {
+      await setDoc(doc(firestore, 'user_roles', user.uid), {
+        role: newRole,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch (error) {
+      console.error("Failed to update role:", error);
+    }
+  }
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/40 bg-card/80 backdrop-blur-xl">
@@ -125,7 +149,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-3 border-t border-border/40">
+      <SidebarFooter className="p-4 border-t border-border/40 space-y-4">
         <SidebarMenu>
           {role === 'admin' && (
             <SidebarMenuItem>
@@ -143,6 +167,23 @@ export function AppSidebar() {
             </SidebarMenuItem>
           )}
         </SidebarMenu>
+
+        <div className="group-data-[collapsible=icon]:hidden space-y-2 px-2 pt-2 border-t">
+          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+            <UserCircle className="h-3.3 w-3.3" />
+            Prototype Role
+          </div>
+          <Select value={role || "customer"} onValueChange={handleRoleChange}>
+            <SelectTrigger className="h-9 bg-muted/50 border-none font-bold text-xs rounded-xl focus:ring-primary/20">
+              <SelectValue placeholder="Select Role" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-none shadow-2xl">
+              <SelectItem value="admin" className="rounded-lg font-bold text-xs">Administrator</SelectItem>
+              <SelectItem value="staff" className="rounded-lg font-bold text-xs">Kitchen Staff</SelectItem>
+              <SelectItem value="customer" className="rounded-lg font-bold text-xs">Guest View</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </SidebarFooter>
     </Sidebar>
   )
