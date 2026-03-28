@@ -9,7 +9,6 @@ import {
   Trash2, 
   Filter,
   Utensils,
-  ArrowUpDown,
   Flame,
   Coffee,
   ChefHat,
@@ -19,7 +18,9 @@ import {
   Sun,
   Moon,
   Zap,
-  Star
+  Star,
+  Sparkles,
+  Loader2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -51,32 +52,31 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import { generateMenuDescription } from "@/ai/flows/menu-description-flow"
+import { useToast } from "@/hooks/use-toast"
 
 const initialMenu = [
-  // Chappatis & Breads
   { id: "CHAP-001", name: "Butter Naan", category: "Chappatis", type: "Veg", price: 2.50, prepTime: "5m", status: "Best Seller" },
   { id: "CHAP-002", name: "Garlic Naan", category: "Chappatis", type: "Veg", price: 3.00, prepTime: "5m", status: "Available" },
   { id: "CHAP-008", name: "Keema Naan", category: "Chappatis", type: "Non-Veg", price: 7.50, prepTime: "15m", status: "Signature" },
-  
-  // Biryani & Rice
-  { id: "BIRY-001", name: "Hyderabadi Chicken Biryani", category: "Biryani", type: "Non-Veg", price: 14.99, prepTime: "20m", status: "Hot" },
+  { id: "BIRY-001", name: "Chicken Biryani", category: "Biryani", type: "Non-Veg", price: 14.99, prepTime: "20m", status: "Hot" },
   { id: "BIRY-002", name: "Mutton Dum Biryani", category: "Biryani", type: "Non-Veg", price: 17.50, prepTime: "25m", status: "Chef Pick" },
-  
-  // Curries
   { id: "CURY-001", name: "Paneer Butter Masala", category: "Curry", type: "Veg", price: 13.99, prepTime: "15m", status: "Classic" },
   { id: "CURY-002", name: "Butter Chicken", category: "Curry", type: "Non-Veg", price: 15.50, prepTime: "18m", status: "Best Seller" },
-
-  // Breakfast
   { id: "BRKF-001", name: "Indori Poha", category: "Breakfast", type: "Veg", price: 6.50, prepTime: "10m", status: "Morning Fav" },
-  { id: "BRKF-002", name: "Masala Dosa with Sambhar", category: "Breakfast", type: "Veg", price: 9.99, prepTime: "12m", status: "Traditional" },
-  
-  // Combos
   { id: "CMBO-001", name: "Biryani & Lassi Combo", category: "Combos", type: "Non-Veg", price: 17.99, prepTime: "18m", status: "Value Pack" },
-  { id: "CMBO-004", name: "Family Pack (Serves 4)", category: "Combos", type: "Non-Veg", price: 55.00, prepTime: "35m", status: "Bulk Deal" },
 ]
 
 export default function MenuManagementPage() {
   const [menuItems] = useState(initialMenu)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [dishName, setDishName] = useState("")
+  const [category, setCategory] = useState("Curry")
+  const [isVeg, setIsVeg] = useState(true)
+  const [aiDescription, setAiDescription] = useState("")
+  const { toast } = useToast()
+
   const categories = [
     { id: "Curry", label: "Curry", icon: Flame },
     { id: "Biryani", label: "Biryani", icon: ChefHat },
@@ -85,9 +85,34 @@ export default function MenuManagementPage() {
     { id: "Dinner", label: "Dinner", icon: Moon },
     { id: "Combos", label: "Combos", icon: Zap },
     { id: "Chappatis", label: "Breads", icon: Utensils },
-    { id: "Snacks", label: "Snacks", icon: Utensils },
     { id: "Drinks", label: "Drinks", icon: Coffee },
   ]
+
+  const handleAiSuggest = async () => {
+    if (!dishName) {
+      toast({
+        variant: "destructive",
+        title: "Missing Name",
+        description: "Please enter a dish name first.",
+      })
+      return
+    }
+
+    setIsGenerating(true)
+    try {
+      const result = await generateMenuDescription({ dishName, category, isVeg })
+      setAiDescription(result.description)
+    } catch (e) {
+      console.error(e)
+      toast({
+        variant: "destructive",
+        title: "AI Error",
+        description: "Could not generate description.",
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -103,7 +128,7 @@ export default function MenuManagementPage() {
               Add Menu Item
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">New Culinary Entry</DialogTitle>
               <DialogDescription>
@@ -112,22 +137,60 @@ export default function MenuManagementPage() {
             </DialogHeader>
             <div className="grid gap-6 py-6">
               <div className="grid gap-2">
-                <Label htmlFor="dish-name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Dish Name</Label>
-                <Input id="dish-name" placeholder="e.g. Royal Shahi Paneer" className="bg-muted/50 border-none h-12 rounded-xl focus:ring-primary" />
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Dish Name</Label>
+                <Input 
+                  value={dishName}
+                  onChange={(e) => setDishName(e.target.value)}
+                  placeholder="e.g. Royal Shahi Paneer" 
+                  className="bg-muted/50 border-none h-12 rounded-xl" 
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="dish-category" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Section</Label>
-                  <Input id="dish-category" placeholder="Curry" className="bg-muted/50 border-none h-12 rounded-xl" />
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Section</Label>
+                  <Input 
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    placeholder="Curry" 
+                    className="bg-muted/50 border-none h-12 rounded-xl" 
+                  />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="dish-type" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Dietary</Label>
-                  <Input id="dish-type" placeholder="Veg" className="bg-muted/50 border-none h-12 rounded-xl" />
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Type</Label>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsVeg(!isVeg)}
+                    className={`h-12 rounded-xl border-none ${isVeg ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}
+                  >
+                    {isVeg ? <Leaf className="h-4 w-4 mr-2" /> : <Beef className="h-4 w-4 mr-2" />}
+                    {isVeg ? "Veg" : "Non-Veg"}
+                  </Button>
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="dish-price" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Price ($)</Label>
-                <Input id="dish-price" type="number" placeholder="14.99" className="bg-muted/50 border-none h-12 rounded-xl" />
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Description</Label>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleAiSuggest}
+                    disabled={isGenerating}
+                    className="text-primary hover:bg-primary/10 h-8 gap-2"
+                  >
+                    {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                    AI Suggest
+                  </Button>
+                </div>
+                <Textarea 
+                  value={aiDescription}
+                  onChange={(e) => setAiDescription(e.target.value)}
+                  placeholder="Describe your dish..." 
+                  className="bg-muted/50 border-none min-h-[100px] rounded-xl" 
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Price ($)</Label>
+                <Input type="number" placeholder="14.99" className="bg-muted/50 border-none h-12 rounded-xl" />
               </div>
             </div>
             <DialogFooter>
