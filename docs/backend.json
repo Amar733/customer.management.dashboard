@@ -267,7 +267,7 @@
           "schema": {
             "$ref": "#/backend/entities/Role"
           },
-          "description": "Stores the definition of various roles (e.g., Admin, Staff, Customer). This collection is primarily for reference and configuration, and its documents are globally readable for rule validation context but not typically writable by end-users. Access to this collection itself is restricted to system-level operations or read-only access for reference."
+          "description": "Stores the definition of various roles. Read-only for all users."
         }
       },
       {
@@ -277,7 +277,7 @@
           "schema": {
             "$ref": "#/backend/entities/Role"
           },
-          "description": "Stores the active role assigned to each user. Each document's ID is the Firebase Authentication UID of the user. This collection is crucial for implementing role-based access control (DBAC) in security rules by allowing direct lookup of a user's role without dependency on the UserProfile document. Documents typically contain a 'role' field (e.g., {'role': 'admin'}). Only authenticated users can read their own role; only Admin can write.",
+          "description": "Stores the active role assigned to each user. For prototyping, users can update their own role document to switch views.",
           "params": [
             {
               "name": "userId",
@@ -293,11 +293,11 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores the detailed profile information for a specific user. The document ID for 'profile' is typically the same as the `{userId}`. Access is restricted such that a user can only read/write their own profile, while 'staff' and 'admin' roles (determined by `/user_roles`) can read all profiles and manage them.",
+          "description": "Stores detailed profile information. Users manage their own; staff/admin can manage all.",
           "params": [
             {
               "name": "userId",
-              "description": "The unique Firebase Authentication UID of the user, matching the `id` field in the UserProfile document."
+              "description": "The unique Firebase Authentication UID of the user."
             }
           ]
         }
@@ -309,7 +309,7 @@
           "schema": {
             "$ref": "#/backend/entities/Product"
           },
-          "description": "Stores information about products available in the shop. All documents in this collection are globally readable by all roles (Customer, Staff, Admin). Write operations (create, update, delete) are restricted to 'staff' and 'admin' roles, as determined by the `/user_roles` collection.",
+          "description": "Publicly readable catalog; managed by staff/admin.",
           "params": [
             {
               "name": "productId",
@@ -325,7 +325,7 @@
           "schema": {
             "$ref": "#/backend/entities/Order"
           },
-          "description": "Stores details for each customer order. Each document includes the `userId` field to link to the customer. Customers can only read and list their own orders (`where('userId', '==', request.auth.uid)`). 'Staff' and 'admin' roles (determined by `/user_roles`) have full read/write access to all orders for management purposes.",
+          "description": "Customer orders. Users see their own; staff/admin see all.",
           "params": [
             {
               "name": "orderId",
@@ -341,7 +341,7 @@
           "schema": {
             "$ref": "#/backend/entities/OrderItem"
           },
-          "description": "A subcollection storing individual items within a specific order. Each OrderItem document will include a denormalized `userId` field (copied from its parent Order) to ensure authorization independence. This allows security rules to verify `request.auth.uid == resource.data.userId` directly, enabling secure and efficient access checks for customers without needing to fetch the parent Order document. 'Staff' and 'admin' roles have full access.",
+          "description": "Items within an order. Authorization follows parent order ownership.",
           "params": [
             {
               "name": "orderId",
@@ -349,12 +349,11 @@
             },
             {
               "name": "orderItemId",
-              "description": "The unique identifier for an item within the order."
+              "description": "The unique identifier for an item."
             }
           ]
         }
       }
-    ],
-    "reasoning": "The Firestore structure is designed to enforce role-based access for Admin, Staff, and Customer while strictly adhering to core design principles, especially Authorization Independence and enabling Query as Authorization Predicate (QAP).\n\n**Authorization Independence (CRITICAL):**\n1.  **Role-Based Access:** A dedicated top-level collection, `/user_roles/{userId}`, is introduced. Each document in this collection will directly store a user's assigned role (e.g., `{'role': 'admin'}`). This denormalization allows security rules to determine a user's role with a single, independent `get()` call (or `exists()` check if using boolean flags) at the top level of the ruleset, completely eliminating hierarchical authorization dependencies related to roles on other data. This is crucial for atomic operations and simplifies rule debugging.\n2.  **Subcollection Access (Order Items):** For the `OrderItem` entity, which resides in the subcollection `/orders/{orderId}/items/{orderItemId}`, the `userId` from its parent `Order` will be explicitly denormalized into *each `OrderItem` document*. This means that when a user tries to access an `OrderItem`, the security rules can directly check `resource.data.userId == request.auth.uid` without needing to perform a `get()` operation on the parent `/orders/{orderId}` document. This ensures atomic access checks for subcollections and maintains authorization independence.\n\n**Query as Authorization Predicate (QAPs):**\n1.  **Structural Segregation & Denormalization:**\n    *   **`UserProfiles` (`/users/{userId}/profile`):** User profiles are placed under a user-specific path, making `read/write` access for the owner (where `{userId}` matches `request.auth.uid`) simple and efficient. Staff and Admin roles (determined via `/user_roles`) can be granted `list` and `get` access to all profiles for management, ensuring QAPs by not mixing different security postures.\n    *   **`Products` (`/products/{productId}`):** This collection maintains a homogeneous security posture where all documents are publicly readable (by customers, staff, admin) for browsing. Write operations (create, update, delete) are restricted to 'staff' or 'admin' roles, which is enforced by rules based on the `/user_roles` lookup.\n    *   **`Orders` (`/orders/{orderId}`):** Each `Order` document explicitly includes the `userId` of the customer. This enables customers to perform secure `list` queries like `db.collection('orders').where('userId', '==', request.auth.uid)`, directly fulfilling the QAP requirement. Staff and Admin roles can `list` all orders, again enforced by rules based on `/user_roles`.\n    *   **`OrderItems` (`/orders/{orderId}/items/{orderItemId}`):** As mentioned, the `userId` is denormalized into each `OrderItem`. This allows customers to `list` order items for *their own orders* by querying the subcollection, with rules checking `resource.data.userId == request.auth.uid` ensuring that only relevant data is returned without complex server-side filtering or multiple `get()` calls.\n\nThis design prioritizes a flat structure for common entities where possible, leverages path-based security for user-owned data, and employs critical denormalization of authorization context (`user_roles` and `userId` in `OrderItem`) to achieve highly debuggable, secure, and scalable Firestore rules that support efficient list operations."
+    ]
   }
 }
