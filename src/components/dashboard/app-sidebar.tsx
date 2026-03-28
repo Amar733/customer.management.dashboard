@@ -15,7 +15,9 @@ import {
   Flame,
   UserCircle,
   ShieldCheck,
-  Briefcase
+  Briefcase,
+  ShoppingBag,
+  Receipt
 } from "lucide-react"
 
 import {
@@ -41,7 +43,6 @@ import {
 } from "@/components/ui/select"
 import { doc, setDoc } from "firebase/firestore"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 
 const navItems = [
   {
@@ -51,15 +52,15 @@ const navItems = [
     roles: ["admin", "staff", "customer"]
   },
   {
-    title: "Culinary Catalog",
+    title: "Products & Menu",
     url: "/dashboard/products",
     icon: UtensilsCrossed,
     roles: ["admin", "staff", "customer"]
   },
   {
-    title: "Kitchen Feed",
+    title: "Orders & Service",
     url: "/dashboard/orders",
-    icon: Flame,
+    icon: Receipt,
     badge: "8",
     roles: ["admin", "staff"]
   },
@@ -91,7 +92,7 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const { user, role, isUserLoading } = useUser()
+  const { user, role } = useUser()
   const firestore = useFirestore()
 
   // During loading or if role is missing, default to customer for prototyping visibility
@@ -109,7 +110,7 @@ export function AppSidebar() {
         updatedAt: new Date().toISOString()
       }, { merge: true });
     } catch (error) {
-      console.error("Failed to update role:", error);
+      // Errors are handled by the global error listener
     }
   }
 
@@ -188,13 +189,13 @@ export function AppSidebar() {
                   <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-none shadow-2xl">
-                  <SelectItem value="admin" className="rounded-lg font-bold text-xs flex items-center gap-2">
+                  <SelectItem value="admin" className="rounded-lg font-bold text-xs">
                     Administrator
                   </SelectItem>
-                  <SelectItem value="staff" className="rounded-lg font-bold text-xs flex items-center gap-2">
+                  <SelectItem value="staff" className="rounded-lg font-bold text-xs">
                     Kitchen Staff
                   </SelectItem>
-                  <SelectItem value="customer" className="rounded-lg font-bold text-xs flex items-center gap-2">
+                  <SelectItem value="customer" className="rounded-lg font-bold text-xs">
                     Guest View
                   </SelectItem>
                 </SelectContent>
