@@ -1,6 +1,7 @@
 
 import { redirect } from "next/navigation"
-
+// 
 export default function ProductsRedirect() {
   redirect("/dashboard/products")
 }
+console.log("hi");
