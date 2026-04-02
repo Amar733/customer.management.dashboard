@@ -94,7 +94,7 @@ export default function CouponsPage() {
                     <SelectContent>
                       <SelectItem value="percentage">Percentage (%)</SelectItem>
                       <SelectItem value="fixed">Fixed Amount ($)</SelectItem>
-                      <SelectItem value="item">Free Item</SelectItem>
+                      <SelectItem value="item">Free Items</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -109,7 +109,7 @@ export default function CouponsPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" className="w-full bg-primary">Activate Coupon</Button>
+              <Button type="submit" className="w-full bg-primary">Activate Coupons</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
