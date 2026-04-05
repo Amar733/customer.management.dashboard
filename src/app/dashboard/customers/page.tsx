@@ -33,7 +33,7 @@ export default function GuestManagementPage() {
     <div className="space-y-6 animate-fade-in">
       <div>
         <h1 className="text-3xl font-bold">Guest Directory & Loyalty</h1>
-        <p className="text-muted-foreground">Monitor guest frequency, visit history, and check rewar eligibility.</p>
+        <p className="text-muted-foreground">Monitor guest frequency, visit history, and check reward eligibility.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
