@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card"
 
 const guests = [
@@ -33,7 +33,7 @@ export default function GuestManagementPage() {
     <div className="space-y-6 animate-fade-in">
       <div>
         <h1 className="text-3xl font-bold">Guest Directory & Loyalty</h1>
-        <p className="text-muted-foreground">Monitor guest frequency, visit history, and reward eligibility.</p>
+        <p className="text-muted-foreground">Monitor guest frequency, visit history, and checkreward eligibility.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -113,11 +113,10 @@ export default function GuestManagementPage() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge className={`gap-1 ${
-                    guest.tier === 'Gold' ? 'bg-amber-100 text-amber-700 hover:bg-amber-100' :
-                    guest.tier === 'Silver' ? 'bg-slate-100 text-slate-700 hover:bg-slate-100' :
-                    'bg-blue-100 text-blue-700 hover:bg-blue-100'
-                  }`}>
+                  <Badge className={`gap-1 ${guest.tier === 'Gold' ? 'bg-amber-100 text-amber-700 hover:bg-amber-100' :
+                      guest.tier === 'Silver' ? 'bg-slate-100 text-slate-700 hover:bg-slate-100' :
+                        'bg-blue-100 text-blue-700 hover:bg-blue-100'
+                    }`}>
                     <Star className="h-3 w-3 fill-current" />
                     {guest.tier}
                   </Badge>
