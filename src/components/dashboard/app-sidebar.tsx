@@ -183,7 +183,7 @@ export function AppSidebar() {
               Prototype Identity
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="role-select" className="text-[10px] font-bold text-muted-foreground px-1">Active Role</Label>
+              <Label htmlFor="role-select" className="text-[10px] font-bold text-muted-foreground px-1">Active Roles</Label>
               <Select value={currentRole} onValueChange={handleRoleChange}>
                 <SelectTrigger id="role-select" className="h-9 bg-background border-none shadow-sm font-bold text-xs rounded-xl focus:ring-primary/20">
                   <SelectValue placeholder="Select Role" />
